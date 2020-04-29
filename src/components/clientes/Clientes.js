@@ -9,7 +9,7 @@ function Clientes() {
     const [clientes, guardarClientes] = useState([]);
     const consultarApi = async () =>{
         const clientesConsulta = await clienteAxios.get('/clientes');
-        console.log(clientesConsulta.data);
+        //console.log(clientesConsulta.data);
         guardarClientes(clientesConsulta.data);
     }
     useEffect( () => {
@@ -27,6 +27,7 @@ function Clientes() {
                     <Cliente
                         key={cliente._id}
                         cliente={cliente}
+                        consultarApi={consultarApi}
                     />
                 ))}
                 </ul>
