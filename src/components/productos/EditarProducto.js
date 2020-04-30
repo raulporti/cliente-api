@@ -1,32 +1,39 @@
 import React, {Fragment, useState, useEffect} from 'react';
-import Swal from 'sweetalert2';
 import clienteAxios from '../../config/axios';
-import {Link} from 'react-router-dom';
-function NuevoProducto({history}) {
-    const [producto, guardarProducto] = useState({
-            nombre: '',
-            precio: ''
+import Swal from 'sweetalert2';
+function EditarProducto (props) {
+    //console.log(props);
+    const {id} = props.match.params;
+    const [producto, datosProductos] = useState({
+        nombre: '',
+        precio: '',
+        imagen: ''
     });
-
     const [archivo, guardarArchivo] = useState('');
 
-    //Leer los datos del formulario
+    const consultarApi = async() =>{
+        const consultaDatos = await clienteAxios.get(`/productos/${id}`);
+        //console.log(consultaDatos.data);
+        datosProductos(consultaDatos.data);
+    }
+
+    useEffect(()=>{
+        consultarApi()
+    }, [])
     const leerProducto = e =>{
-        guardarProducto({
+        datosProductos({
             ...producto,
             [e.target.name] : e.target.value
         })
     }
 
     //Coloca la imagen en el state
-    const leerArchivo = e =>{
+    const leerArchivo =  e =>{
         guardarArchivo(e.target.files[0]);
     }
 
-    //ingresa el nuevo producto
-    const agregarProducto = async e =>{
+    const editarProducto = async e =>{
         e.preventDefault();
-
         //Crear un formdata
         const formdata = new FormData();
         formdata.append('nombre', producto.nombre);
@@ -35,17 +42,18 @@ function NuevoProducto({history}) {
 
         //Almacenar en la bd
         try {
-            const res = await clienteAxios.post('/productos', formdata, {
+            const res = await clienteAxios.put(`/productos/${id}`, formdata, {
                 headers: {
                     'Content-Type' : 'multipart/form-data'
                 }
             });
                 Swal.fire(
-                    'Producto Ingresado',
-                    res.data.mensaje,
-                    'success'
+                    'Producto Editado',
+                    'Producto Editado Correctamente',
+                    'info'
                 )
-                history.push('/productos');
+                console.log(res);
+                props.history.push('/productos');
         } catch (error) {
             Swal.fire({
                 icon: 'error',
@@ -54,17 +62,13 @@ function NuevoProducto({history}) {
             })
         }
     }
+    const {nombre, precio, imagen} = producto;
 
-    const validarDatos = () =>{
-        const {nombre, precio} = producto;
-        const noValido = !nombre.length || precio == "" || archivo ==""
-        return noValido
-    }
-    return(
+    return (
         <Fragment>
-        <h2> Nuevo Producto</h2>
+        <h2>Editar Producto</h2>
         <form
-            onSubmit={agregarProducto}
+            onSubmit={editarProducto}
         >
                 <legend>Llena todos los campos</legend>
 
@@ -73,6 +77,7 @@ function NuevoProducto({history}) {
                     <input  type="text" 
                             placeholder="Nombre Producto" 
                             name="nombre"
+                            defaultValue={nombre}
                             onChange={leerProducto}
                     />
                 </div>
@@ -84,28 +89,26 @@ function NuevoProducto({history}) {
                             min="0.00" 
                             step="0.01" 
                             placeholder="Precio"
+                            defaultValue={precio}
                             onChange={leerProducto}
                     />
                 </div>
-            
                 <div className="campo">
                     <label>Imagen:</label>
+                    {imagen ? (
+                        <img src={`http://localhost:5000/${imagen}`} alt={nombre} width="250" height="250"/>
+                    ) : null}
+                    </div>
                     <input  type="file"  
                             name="imagen"
                             onChange={leerArchivo}
                     />
-                </div>
-
                 <div className="enviar">
-                        <input  type="submit" 
-                                className="btn btn-azul" 
-                                value="Agregar Producto"
-                                disabled={validarDatos()}
-                        />
+                        <input type="submit" className="btn btn-azul" value="Guardar Cambios"/>
                 </div>
             </form>
         </Fragment>
-    );
+        
+    )
 }
-
-export default NuevoProducto;
+export default EditarProducto;

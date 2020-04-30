@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react';
 import clienteAxios from '../../config/axios';
 import Swal from 'sweetalert2';
+import {Link} from 'react-router-dom';
 function Producto({producto, consultarAPI}) {
     //console.log(producto)
     //Extraer datos de la repuesta 
@@ -45,10 +46,10 @@ function Producto({producto, consultarAPI}) {
                         ) : null}
                     </div>
                     <div className="acciones">
-                        <a href="#" className="btn btn-azul">
+                        <Link to={`/productos/editar/${_id}`} className="btn btn-azul">
                             <i className="fas fa-pen-alt"></i>
                             Editar Producto
-                        </a>
+                        </Link>
 
                         <button type="button" 
                                 className="btn btn-rojo btn-eliminar"
