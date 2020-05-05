@@ -3,6 +3,7 @@ import clienteAxios from '../../config/axios';
 import BuscarProducto from './FormBuscarProducto';
 import CantidadProducto from './FormCantidadProducto';
 import Swal from 'sweetalert2';
+import {withRouter} from 'react-router-dom';
 function NuevoPedido(props){
 
     //Extraer ID de cliente
@@ -10,6 +11,7 @@ function NuevoPedido(props){
     const [cliente, guardarCliente] = useState({});
     const [busqueda, guardarBusqueda] = useState('');
     const [productos, guardarProductos] = useState([]);
+    const [total, guardarTotal]= useState(0); 
     useEffect(() =>{
         const consultarAPI = async () =>{
             const resultado = await clienteAxios.get(`/clientes/${id}`);
@@ -17,7 +19,9 @@ function NuevoPedido(props){
         }
 
         consultarAPI();
-    }, [])
+
+        actualizarTotal();
+    }, [productos])
 
     const buscarProducto = async e =>{
         e.preventDefault();
@@ -66,7 +70,54 @@ function NuevoPedido(props){
 
         guardarProductos(todosProductos);
     }
+    //Eliminar el producto del state
+    const eliminarProductoPedido = id =>{
+            const todosProductos = productos.filter(producto => producto.producto !== id);
+            guardarProductos(todosProductos);
 
+    } 
+    const actualizarTotal = () =>{
+       if(productos.length === 0){
+            guardarTotal(0);
+            return; 
+        }
+        //Calcular el nuevo total
+        let nuevoTotal = 0;
+        //Recorrer todos los productos, cantidades y precios
+        productos.map(producto => nuevoTotal += (producto.cantidad * producto.precio));
+
+        guardarTotal(nuevoTotal);
+    }
+    const realizarPedido = async e =>{
+        e.preventDefault();
+        //extraer id 
+        const {id} = props.match.params;
+       //Construit objeto
+       const pedido = {
+        "cliente": id,
+        "pedido": productos,
+        "total": total
+       } 
+       //Almacenarlo en la base de datos
+       const resultado = await clienteAxios.post(`/pedidos/nuevo/${id}`, pedido);
+       if(resultado.status === 200){
+        Swal.fire({
+            title:resultado.data.mensaje,
+            icon: 'success'
+        }
+
+        )
+       }else{
+        Swal.fire({
+            title: 'Hubo un error',
+            text: 'Intenta de nuevo',
+            icon: 'error'
+        }
+
+        )   
+       }
+       props.history.push('/pedidos');
+    }
     return(
         <Fragment>
         <h2>Nuevo Pedido</h2>
@@ -86,17 +137,22 @@ function NuevoPedido(props){
                             restarProductos={restarProductos}
                             sumarProductos={sumarProductos}
                             index={index}
+                            eliminarProducto={eliminarProductoPedido}
                         />
                         ))}
                 </ul>
-                <div className="campo">
-                    <label>Total:</label>
-                    <input type="number" name="precio" placeholder="Precio" readOnly="readonly"/>
-                </div>
-                <div className="enviar">
-                    <input type="submit" className="btn btn-azul" value="Agregar Pedido"/>
-                </div>
+                    <p className="total"> Total a Pagar: <span>$ {total}</span></p>
+                {total > 0 ? (
+                    <form
+                        onSubmit={realizarPedido}
+                    >
+                        <input type="submit"
+                                className="btn btn-verde btn-block"
+                                value="Realizar Pedido"
+                        />
+                    </form>
+                ): null}
         </Fragment>
     )
 }
-export default NuevoPedido;
+export default withRouter(NuevoPedido);

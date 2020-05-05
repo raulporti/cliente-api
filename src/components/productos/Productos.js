@@ -1,9 +1,10 @@
 import React, { useEffect, Fragment, useState } from 'react';
 import {Link} from 'react-router-dom';
 import Producto from './Producto';
+import Swal from 'sweetalert2';
+import Spinner from '../layout/Spinner';
 //Importar Cliente Axios
 import clienteAxios from '../../config/axios';
-import Spinner from '../layout/Spinner';
 function Productos(){ 
     const [productos, guardarProducto] = useState([]);
     const consultarAPI = async () =>{
@@ -13,15 +14,28 @@ function Productos(){
     }
     useEffect(() => {
         consultarAPI();
+        validarInfo();
     }, [])
-    if(!productos.length) return <Spinner/>
+        
+        const validarInfo = () =>{
+            console.log(productos);
+            if(productos.length===0) {
+                Swal.fire({
+                    title: 'No existen Productos',
+                    text: 'Crea Nuevos Productos',
+                    icon: 'info'
+                })
+                return;
+            }
+        }
         return ( 
             <Fragment>
-            <h2>Productos</h2>
+                
+                <h2>Productos</h2>
             <Link to="/productos/nuevo" className="btn btn-verde nvo-cliente"> <i className="fas fa-plus-circle"></i>
                 Nuevo Producto
             </Link>
-            <ul className="listado-productos">
+                <ul className="listado-productos">
             {productos.map(producto => (
                 <Producto
                     key={producto._id}
