@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Swal from 'sweetalert2';
 import clienteAxios from '../../config/axios';
 import {withRouter} from 'react-router-dom';
+import {CRMContext} from '../../context/CRMContext';
 function Login(props){
 
+    const [auth, guardarAuth] = useContext(CRMContext);
     const [credenciales, guardarCredenciales] = useState({});
     const leerDatos = e =>{
         guardarCredenciales({
@@ -19,6 +21,12 @@ function Login(props){
             //Extraer el token y colocarlo en localstorage
             const {token} = respuesta.data;
             localStorage.setItem('token', token);
+
+            //Colocarlo en el state
+            guardarAuth({
+                token,
+                auth: true
+            })
             Swal.fire({
                 title: 'Login Correcto',
                 text: 'Felicidades',
