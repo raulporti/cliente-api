@@ -3,10 +3,14 @@ import {Link} from 'react-router-dom';
 import Producto from './Producto';
 import Swal from 'sweetalert2';
 import Spinner from '../layout/Spinner';
+import {CRMContext} from '../../context/CRMContext';
+
 //Importar Cliente Axios
 import clienteAxios from '../../config/axios';
 function Productos(){ 
     const [productos, guardarProducto] = useState([]);
+    const[auth, guardarAuth] = useContext(CRMContext);
+    
     const consultarAPI = async () =>{
         const productosConsulta = await clienteAxios.get('/productos');
         //console.log(productosConsulta);

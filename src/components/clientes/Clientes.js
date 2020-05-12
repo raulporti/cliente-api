@@ -9,11 +9,10 @@ function Clientes(props) {
     //Trabajar con el state
     const [clientes, guardarClientes] = useState([]);
     const[auth, guardarAuth] = useContext(CRMContext);
-    
     useEffect( () => {
         if(auth.token !== ''){
-            try {
                 const consultarApi = async () =>{
+                    try{
                     const clientesConsulta = await clienteAxios.get('/clientes',{
                         headers: {
                             Authorization: `Bearer ${auth.token}`
@@ -21,20 +20,20 @@ function Clientes(props) {
                     });
                     //console.log(clientesConsulta.data);
                     guardarClientes(clientesConsulta.data);
-                }
-            } catch (error) {
-                if(error.response.status = 500){
-                    props.history.push('/iniciar-sesion');
+                } catch (error) {
+                    if(error.response.status = 500){
+                        props.history.push('/iniciar-sesion');
+                    }
                 }
             }
-            
             consultarApi();
-        }else{
+        }
+        else{
             props.history.push('/iniciar-sesion');
         }
         
         
-    }, [] );
+    }, [clientes] );
         return ( 
             <Fragment>
                 <h2>Clientes</h2>
@@ -47,7 +46,7 @@ function Clientes(props) {
                     <Cliente
                         key={cliente._id}
                         cliente={cliente}
-                        consultarApi={consultarApi}
+                        consultarApi={useEffect.consultarApi}
                     />
                 ))}
                 </ul>
