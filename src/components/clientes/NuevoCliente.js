@@ -5,11 +5,16 @@ import {withRouter} from 'react-router-dom';
 function NuevoCliente({history}){
 
     const [cliente, guardarCliente] = useState({
-        nombre: '',
-        apellido: '',
-        empresa: '',
-        email: '',
-        telefono: ''
+        cli_nombre1: '',
+        cli_nombre2: '',
+        cli_apellido1: '',
+        cli_apellido2: '',
+        cli_apellido_casada: '',
+        cli_direccion: '',
+        cli_telefono1: '',
+        cli_telefono2: '',
+        cli_identificacion: '',
+        cli_fecha: ''
     });
     //Leer los datos del formulario
     const actualizarState = e =>{
@@ -48,9 +53,10 @@ function NuevoCliente({history}){
     }
     //Validar Formulario
     const validarCliente = () =>{
-        const {nombre, apellido, email, empresa, telefono} = cliente;
+        const {cli_nombre1, cli_nombre2, cli_apellido1, cli_apellido2, cli_apellido_casada,
+            cli_direccion, cli_telefono1, cli_telefono2, cli_identificacion, cli_fecha} = cliente;
 
-        let valido = !nombre.length || !apellido.length || !email.length || !empresa.length || !telefono.length;
+        let valido = !cli_nombre1.length || !cli_apellido1.length || !cli_direccion.length || !cli_identificacion.length || !cli_fecha.length;
         return valido;
     }
     return(
@@ -64,8 +70,14 @@ function NuevoCliente({history}){
             <div className="campo">
                 <label>Nombre:</label>
                 <input  type="text" 
-                        placeholder="Nombre Cliente" 
-                        name="nombre"
+                        placeholder="Primer Nombre" 
+                        name="cli_nombre1"
+                        onChange={actualizarState}
+                />
+                <label>Nombre:</label>
+                <input  type="text" 
+                        placeholder="Segundo nombre" 
+                        name="cli_nombre2"
                         onChange={actualizarState}
                 />
             </div>
@@ -73,35 +85,59 @@ function NuevoCliente({history}){
             <div className="campo">
                 <label>Apellido:</label>
                 <input  type="text" 
-                        placeholder="Apellido Cliente" 
-                        name="apellido"
+                        placeholder="Primer Apellido" 
+                        name="cli_apellido1"
+                        onChange={actualizarState}
+            />
+            <input  type="text" 
+                        placeholder="Segundo Apellido" 
+                        name="cli_apellido2"
+                        onChange={actualizarState}
+            />
+            <input  type="text" 
+                        placeholder="Apellido Casada" 
+                        name="cli_apellido_casada"
                         onChange={actualizarState}
             />
             </div>
         
             <div className="campo">
-                <label>Empresa:</label>
+                <label>Direccion:</label>
                 <input  type="text" 
-                        placeholder="Empresa Cliente" 
-                        name="empresa"
+                        placeholder="Direccion" 
+                        name="cli_direccion"
                         onChange={actualizarState}
             />
             </div>
 
             <div className="campo">
-                <label>Email:</label>
-                <input  type="email" 
-                        placeholder="Email Cliente" 
-                        name="email"
+                <label>Telefono 1:</label>
+                <input  type="text" 
+                        placeholder="Telefono 1" 
+                        name="cli_telefono1"
+                        onChange={actualizarState}
+            />
+            <label>Telefono 2:</label>
+                <input  type="text" 
+                        placeholder="Telefono 2" 
+                        name="cli_telefono2"
                         onChange={actualizarState}
             />
             </div>
 
             <div className="campo">
-                <label>Teléfono:</label>
+                <label>Identificacion:</label>
                 <input  type="text" 
-                        placeholder="Teléfono Cliente" 
-                        name="telefono"
+                        placeholder="Identificacion" 
+                        name="cli_identificacion"
+                        onChange={actualizarState}
+            />
+            </div>
+            <div className="campo">
+                <label>Fecha:</label>
+                <input  type="date" 
+                        placeholder="Fecha" 
+                        name="cli_fecha"
                         onChange={actualizarState}
             />
             </div>

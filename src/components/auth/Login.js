@@ -17,27 +17,35 @@ function Login(props){
         e.preventDefault();
         //Autenticar usuario
         try {
-            const respuesta = await clienteAxios.post('/iniciar-sesion', credenciales);
+            const respuesta = await clienteAxios.post('/login', credenciales);
             //Extraer el token y colocarlo en localstorage
-            const {token} = respuesta.data;
+            const {token, success} = respuesta.data;
             localStorage.setItem('token', token);
+            if(success){
+                //Colocarlo en el state
+                guardarAuth({
+                    token,
+                    auth: true
+                })
+                Swal.fire({
+                    title: 'Login Correcto',
+                    text: 'Felicidades',
+                    icon: "success"
+                })
+                props.history.push('/');
+            }else{
+                Swal.fire({
+                    title: 'Error en la Autenticacion',
+                    text: respuesta.data.mensaje,
+                    icon: "error"
+                })    
+            }
+            
 
-            //Colocarlo en el state
-            guardarAuth({
-                token,
-                auth: true
-            })
-            Swal.fire({
-                title: 'Login Correcto',
-                text: 'Felicidades',
-                icon: "success"
-            })
-            props.history.push('/');
         } catch (error) {
-            console.log(error);
             Swal.fire({
                 title: 'Hubo un error',
-                text: error.response.data.mensaje,
+                text: error,
                 icon: "error"
             })
         }
@@ -53,8 +61,8 @@ function Login(props){
                         <label>Email</label>
                         <input
                             type="text"
-                            name="email"
-                            placeholder="Email para iniciar Sesión"
+                            name="name"
+                            placeholder="Nombre para iniciar Sesión"
                             required
                             onChange={leerDatos}
                         />

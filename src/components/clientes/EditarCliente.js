@@ -7,18 +7,24 @@ function EditarCliente (props) {
     const {id} = props.match.params;
 
     const [cliente, datosCliente] = useState({
-        nombre: '',
-        apellido: '',
-        empresa: '',
-        email: '',
-        telefono: ''
+        cli_codigo_cliente: '',
+        cli_nombre1: '',
+        cli_nombre2: '',
+        cli_apellido1: '',
+        cli_apellido2: '',
+        cli_apellido_casada: '',
+        cli_direccion: '',
+        cli_telefono1: '',
+        cli_telefono2: '',
+        cli_identificacion: '',
+        cli_fecha: ''
     });
 
     //Consulta a la api para obtener un cliente por su id
     const consultarApi = async () =>{
         const clientesConsulta = await clienteAxios.get(`/clientes/${id}`);
         //console.log(clientesConsulta.data);
-        datosCliente(clientesConsulta.data);
+        datosCliente(clientesConsulta.data.data);
     }
     useEffect( () => {
         consultarApi();
@@ -33,16 +39,18 @@ function EditarCliente (props) {
     }
 
     //Validar el Formulario
-    const validarCliente = () =>{
-        const {nombre, apellido, empresa, email, telefono} = cliente;
-        let valido = !nombre.length || !apellido.length || !email.length || !empresa.length || !telefono.length;
+    /*const validarCliente = () =>{
+        const {cli_nombre1, cli_nombre2, cli_apellido1, cli_apellido2, cli_apellido_casada,
+            cli_direccion, cli_telefono1, cli_telefono2, cli_identificacion, cli_fecha} = cliente;
+
+        let valido = !cli_nombre1.length || !cli_apellido1.length || !cli_direccion.length || !cli_identificacion.length || !cli_fecha.length;
         return valido;
-    }
+    }*/
     //Enviar la peticion por axios para actualizar
     const actualizarCliente = e =>{
         e.preventDefault();
 
-        clienteAxios.put(`/clientes/${cliente._id}`, cliente)
+        clienteAxios.put(`/clientes/${cliente.cli_codigo_cliente}`, cliente)
             .then(res =>{
                 if(res.data.code === 11000){
                     console.log('Error de Duplicación');
@@ -75,58 +83,85 @@ function EditarCliente (props) {
             <div className="campo">
                 <label>Nombre:</label>
                 <input  type="text" 
-                        placeholder="Nombre Cliente" 
-                        name="nombre"
+                        placeholder="Primer Nombre" 
+                        name="cli_nombre1"
                         onChange={actualizarState}
-                        value={cliente.nombre}
+                        
+                />
+                <label>Nombre:</label>
+                <input  type="text" 
+                        placeholder="Segundo nombre" 
+                        name="cli_nombre2"
+                        onChange={actualizarState}
                 />
             </div>
 
             <div className="campo">
                 <label>Apellido:</label>
                 <input  type="text" 
-                        placeholder="Apellido Cliente" 
-                        name="apellido"                       
+                        placeholder="Primer Apellido" 
+                        name="cli_apellido1"
                         onChange={actualizarState}
-                        value={cliente.apellido}
+            />
+            <input  type="text" 
+                        placeholder="Segundo Apellido" 
+                        name="cli_apellido2"
+                        onChange={actualizarState}
+            />
+            <input  type="text" 
+                        placeholder="Apellido Casada" 
+                        name="cli_apellido_casada"
+                        onChange={actualizarState}
             />
             </div>
         
             <div className="campo">
-                <label>Empresa:</label>
+                <label>Direccion:</label>
                 <input  type="text" 
-                        placeholder="Empresa Cliente" 
-                        name="empresa"                        
+                        placeholder="Direccion" 
+                        name="cli_direccion"
                         onChange={actualizarState}
-                        value={cliente.empresa}
             />
             </div>
 
             <div className="campo">
-                <label>Email:</label>
-                <input  type="email" 
-                        placeholder="Email Cliente" 
-                        name="email"                        
+                <label>Telefono 1:</label>
+                <input  type="text" 
+                        placeholder="Telefono 1" 
+                        name="cli_telefono1"
                         onChange={actualizarState}
-                        value={cliente.email}
+            />
+            <label>Telefono 2:</label>
+                <input  type="text" 
+                        placeholder="Telefono 2" 
+                        name="cli_telefono2"
+                        onChange={actualizarState}
             />
             </div>
 
             <div className="campo">
-                <label>Teléfono:</label>
+                <label>Identificacion:</label>
                 <input  type="text" 
-                        placeholder="Teléfono Cliente" 
-                        name="telefono"                       
+                        placeholder="Identificacion" 
+                        name="cli_identificacion"
                         onChange={actualizarState}
-                        value={cliente.telefono}
             />
             </div>
+            <div className="campo">
+                <label>Fecha:</label>
+                <input  type="date" 
+                        placeholder="Fecha" 
+                        name="cli_fecha"
+                        onChange={actualizarState}
+            />
+            </div>
+
 
             <div className="enviar">
                     <input  type="submit" 
                             className="btn btn-azul" 
                             value="Guardar Cambios"
-                            disabled={validarCliente()}
+                            //disabled={validarCliente()}
             />
             </div>
         </form>

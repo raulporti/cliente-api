@@ -16,7 +16,7 @@ const Header = (props) =>{
         <header className="barra">
         <div className="contenedor">
         <div className="contenido-barra">
-        <h1>CRM - Administrador de Clientes</h1>
+        <h1>Prueba BAM</h1>
         {auth.auth ?(
             <button type="button"
                     className="btn btn-rojo"

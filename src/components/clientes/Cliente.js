@@ -3,7 +3,8 @@ import {Link} from 'react-router-dom';
 import Swal from 'sweetalert2';
 import clienteAxios from '../../config/axios';
 function Cliente({cliente, consultarApi}) {
-    const {_id, nombre, apellido, empresa, telefono, email} = cliente;
+    const {cli_codigo_cliente, cli_nombre1, cli_nombre2, cli_apellido1, cli_apellido2, cli_apellido_casada,
+    cli_direccion, cli_telefono1} = cliente;
 
     const eliminarCliente = id =>{
         Swal.fire({
@@ -32,23 +33,19 @@ function Cliente({cliente, consultarApi}) {
     return(
         <li className="cliente">
                     <div className="info-cliente">
-                        <p className="nombre">{nombre+" "+ apellido}</p>
-                        <p className="empresa">{empresa}</p>
-                        <p>Correo: {email}</p>
-                        <p>Tel: {telefono}</p>
+                        <p className="Nombre">{cli_nombre1+" "+ cli_nombre2}</p>
+                        <p className="Apellido">{cli_apellido1 + " " + cli_apellido2}</p>
+                        <p>Direccion: {cli_direccion}</p>
+                        <p>Telefono: {cli_telefono1}</p>
                     </div>
                     <div className="acciones">
-                        <Link to={`/clientes/editar/${_id}`} className="btn btn-azul">
+                        <Link to={`/clientes/editar/${cli_codigo_cliente}`} className="btn btn-azul">
                             <i className="fas fa-pen-alt"></i>
                             Editar Cliente
                         </Link>
-                        <Link to={`/pedidos/nuevo/${_id}`} className="btn btn-amarillo">
-                            <i className="fas fa-plus"></i>
-                            Nuevo Pedido
-                        </Link>
                         <button type="button" 
                                 className="btn btn-rojo btn-eliminar" 
-                                onClick={()=>eliminarCliente(_id)}
+                                onClick={()=>eliminarCliente(cli_codigo_cliente)}
                         >
                             <i className="fas fa-times"></i>
                             Eliminar Cliente

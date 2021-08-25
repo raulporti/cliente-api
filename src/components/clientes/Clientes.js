@@ -10,29 +10,21 @@ function Clientes(props) {
     const [clientes, guardarClientes] = useState([]);
     const[auth, guardarAuth] = useContext(CRMContext);
     useEffect( () => {
-        if(auth.token !== ''){
                 const consultarApi = async () =>{
                     try{
-                    const clientesConsulta = await clienteAxios.get('/clientes',{
-                        headers: {
-                            Authorization: `Bearer ${auth.token}`
-                        }
+                    const respuesta = await clienteAxios.get('/clientes', {
+                        headers : {'Access-Control-Allow-Origin': '*'}
+                             
                     });
                     //console.log(clientesConsulta.data);
-                    guardarClientes(clientesConsulta.data);
+                    guardarClientes(respuesta.data.data);
                 } catch (error) {
-                    if(error.response.status = 500){
-                        props.history.push('/iniciar-sesion');
+                    if(error.status = 500){
+                        props.history.push('/');
                     }
                 }
             }
-            consultarApi();
-        }
-        else{
-            props.history.push('/iniciar-sesion');
-        }
-        
-        
+            consultarApi();        
     }, [clientes] );
         return ( 
             <Fragment>
@@ -44,7 +36,7 @@ function Clientes(props) {
                 <ul className="listado-clientes">
                 {clientes.map(cliente =>(
                     <Cliente
-                        key={cliente._id}
+                        key={cliente.cli_codigo_cliente}
                         cliente={cliente}
                         consultarApi={useEffect.consultarApi}
                     />
